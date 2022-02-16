@@ -23,6 +23,7 @@
 #include <tegra210b01-soc/tegra210b01-soc-common-platform.dtsi>
 #include <tegra210-soc/mods-simple-bus.dtsi>
 #include <tegra210-soc/tegra210-audio.dtsi>
+#include <audio/tegra210-audio-dai-links.dtsi>
 #include <t210-common-platforms/tegra210-p2530-common.dtsi>
 #include "sif-platforms/tegra210b01-sif-gpio-p3425-0500-a01.dtsi"
 #include "foster-platforms/tegra210-pinmux-drive-sdmmc-common.dtsi"
@@ -224,7 +225,7 @@
 				regulator-supplies = "vdd-1v8-spi-hv", "vdd-1v8-spi-hv-bias";
 				vdd-1v8-spi-hv-supply = <&max77620_sd3>;
 				vdd-1v8-spi-hv-bias-supply = <&max77620_sd3>;
-				fsync-width = <0>;
+				bclk-ratio = <4>;
 			};
 		};
 	};
@@ -604,74 +605,16 @@
 
 	sound_card: sound {
 		compatible = "nvidia,tegra-audio-t210ref-mobile-rt565x";
-		nvidia,model = "tegra-snd-t210ref-mobile-rt565x";
+		nvidia-audio-card,name = "tegra-snd-t210ref-mobile-rt565x";
 
-		clocks = <&tegra_car TEGRA210_CLK_PLL_P_OUT1>,
-			<&tegra_car TEGRA210_CLK_PLL_A>,
-			<&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-			<&tegra_car TEGRA210_CLK_D_AUDIO>,
-			<&tegra_car TEGRA210_CLK_CLK_M>,
-			<&tegra_car TEGRA210_CLK_EXTERN1>;
-		clock-names = "pll_p_out1", "pll_a", "pll_a_out0", "ahub",
-			"clk_m", "extern1";
+		clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
+			 <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
+			 <&tegra_car TEGRA210_CLK_EXTERN1>;
+		clock-names = "pll_a", "pll_a_out0", "extern1";
+		assigned-clocks = <&tegra_car TEGRA210_CLK_EXTERN1>;
+		assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
 
-		assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-			<&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-			<&tegra_car TEGRA210_CLK_D_AUDIO>,
-			<&tegra_car TEGRA210_CLK_EXTERN1>;
-		assigned-clock-rates = <368640000>, <36864000>,
-			<36864000>, <12288000>;
-		nvidia,num-codec-link = <2>;
-
-		nvidia,audio-routing =
-			"y Headphone", 	"y OUT",
-			"y IN",		"y Mic",
-			"x Headphone",	"x OUT",
-			"x IN",		"x Mic";
-
-		nvidia,xbar = <&tegra_axbar>;
-
-		/* The codec-dai here is initialized to dummy and will be   */
-		/* replaced with rt565x codec-dai on detecting super-module */
-		nvidia,dai-link-1 {
-			link-name = "rt565x-playback";
-			cpu-dai = <&tegra_i2s2>;
-			codec-dai = <&spdif_dit0>;
-			cpu-dai-name = "I2S2";
-			codec-dai-name = "dit-hifi";
-			tx-mask = <0xFF>;
-			rx-mask = <0xFF>;
-			format = "dsp_a";
-			bitclock-slave;
-			frame-slave;
-			bitclock-inversion;
-			frame-noninversion;
-			bit-format = "s16_le";
-			bclk_ratio = <4>;
-			srate = <48000>;
-			num-channel = <1>;
-			ignore_suspend;
-			name-prefix = "y";
-		};
-
-		nvidia,dai-link-2 {
-			link-name = "spdif-dit-1";
-			cpu-dai = <&tegra_i2s1>;
-			codec-dai = <&spdif_dit1>;
-			cpu-dai-name = "I2S1";
-			codec-dai-name = "dit-hifi";
-			format = "i2s";
-			bitclock-slave;
-			frame-slave;
-			bitclock-inversion;
-			frame-noninversion;
-			bit-format = "s16_le";
-			bclk_ratio = <1>;
-			srate = <48000>;
-			num-channel = <2>;
-			ignore_suspend;
-			name-prefix = "x";
-		};
+		nvidia-audio-card,mclk-fs = <256>;
 	};
 
 	i2c@7000c400 {
@@ -983,4 +926,9 @@
 		nvidia,pmc-wakeup = <&tegra_pmc PMC_WAKE_TYPE_EVENT 16
 				     PMC_TRIGGER_TYPE_HIGH>;
 	};
+};
+
+&i2s2_to_codec {
+	format = "dsp_a";
+	bitclock-inversion;
 };
