@@ -202,10 +202,18 @@
 	};
 
 	efuse@7000f800 {
+#if LINUX_VERSION < 419
 		efuse-burn {
 			nvidia,redundant-aid-war;
 		};
+#endif
 	};
+
+#if LINUX_VERSION >= 419
+	efuse-burn {
+		nvidia,redundant-aid-war;
+	};
+#endif
 
 	aconnect@702c0000 {
 		ahub {
