@@ -53,7 +53,7 @@
 					dev = "/dev/block/platform/sdhci-tegra.3/by-name/vendor";
 					type = "ext4";
 					mnt_flags = "ro,noatime";
-					fsmgr_flags = "wait,avb";
+					fsmgr_flags = "wait";
 				};
 			};
 		};
