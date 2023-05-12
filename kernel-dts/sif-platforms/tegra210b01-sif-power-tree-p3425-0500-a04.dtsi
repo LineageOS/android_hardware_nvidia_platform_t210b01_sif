@@ -21,6 +21,9 @@
 	i2c@7000d000 {
 		max77620: max77620@3c {
 			maxim,enable-rtc2-alarm-wakeup;
+			low-battery-monitor {
+				maxim,low-battery-shutdown-disable;
+			};
 
 			max77620_default: pinmux@0 {
 				pin_gpio1 {
