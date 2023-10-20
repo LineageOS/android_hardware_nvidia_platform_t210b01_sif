@@ -20,7 +20,7 @@
 		polling_period = <1100>;
 		ndevs = <1>;
 		cdev_type = "pwm-fan";
-		tzp_governor_name = "continuous_therm_gov";
+		tzp_governor_name = "cont_therm_gov";
 
 		dev1 {
 			dev_data = "CPU-therm";
@@ -36,7 +36,7 @@
 		shared_data = <&thermal_fan_est_shared_data>;
 		trip_length = <10>;
 		thermal-zone-params {
-			governor-name = "continuous_therm_gov";
+			governor-name = "cont_therm_gov";
 			iir_power = <7>;
 			iir_min = <10>;
 			iir_max = <1000>;
