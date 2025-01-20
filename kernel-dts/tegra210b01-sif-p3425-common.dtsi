@@ -58,10 +58,20 @@
 	};
 
 	gpio-keys {
-		power {
+		/delete-property/ disable-on-recovery-kernel;
+
+		pairing {
+			label = "Pairing";
 			gpios = <&gpio TEGRA_GPIO(X, 7) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_CONNECT>;
+			gpio-key,wakeup;
+			debounce-interval = <30>;
 			nvidia,pmc-wakeup = <&tegra_pmc
 				PMC_WAKE_TYPE_GPIO 26 PMC_TRIGGER_TYPE_NONE>;
+		};
+
+		power {
+			status="disabled";
 		};
 
 		sw_lid {
@@ -571,6 +581,8 @@
 	};
 
 	gpio-timed-keys {
+		/delete-property/ enable-on-recovery-kernel;
+
 		power {
 			gpios = <&gpio TEGRA_GPIO(X, 7) GPIO_ACTIVE_LOW>;
 		};
@@ -906,6 +918,14 @@
 
 	i2c@7000c500 {
 		status = "disabled";
+	};
+
+	i2c@7000d000 {
+		max77620@3c {
+			onoff {
+				status = "disabled";
+			};
+		};
 	};
 
 	i2c@7000d100 {
